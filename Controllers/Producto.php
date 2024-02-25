@@ -30,7 +30,7 @@ class Producto extends Controllers
         ];
         jsonResponse($resSuccess);
       } else {
-        badRequestResponse("Metodo no permitido");
+        methodNotAllowedResponse($method);
       }
     } catch (Exception $e) {
       echo $e->getMessage();

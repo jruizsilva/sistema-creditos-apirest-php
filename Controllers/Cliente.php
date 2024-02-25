@@ -8,7 +8,7 @@ class Cliente extends Controllers
   }
 
 
-  public function cliente($idCliente)
+  public function cliente(string $idCliente)
   {
     try {
       $method = $_SERVER['REQUEST_METHOD'];
@@ -19,11 +19,16 @@ class Cliente extends Controllers
         if (!is_numeric($idCliente)) {
           badRequestResponse("El id no es valido");
         }
-        $resGet = $this->getModel()->getCliente($idCliente);
-        if (empty($resGet)) {
+        $cliente = $this->getModel()->getCliente($idCliente);
+        if (empty($cliente)) {
           notFoundResponse("El cliente no existe");
         }
-        jsonResponse($resGet);
+        $resSuccess = [
+          'status' => 'success',
+          "msg" => "Cliente encontrado",
+          'data' => $cliente
+        ];
+        jsonResponse($resSuccess);
       } else {
         methodNotAllowedResponse($method);
       }

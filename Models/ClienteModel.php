@@ -72,18 +72,6 @@ class ClienteModel extends Mysql
     $this->nombreFiscal = $nombreFiscal;
     $this->direccionFiscal = $direccionFiscal;
 
-    $sql_select = "SELECT identificacion,email FROM clientes WHERE id_cliente = :id_cliente AND
-    status = :status;";
-    $select_values = [
-      ':id_cliente' => $this->idCliente,
-      ':status' => 1
-    ];
-    $resSelect = $this->select($sql_select, $select_values);
-
-    if (empty($resSelect)) {
-      return "not_found";
-    }
-
     $sql_select = "SELECT identificacion,email 
     FROM clientes
     WHERE

@@ -52,7 +52,7 @@ class Mysql extends Conexion
       $resSelect = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt->closeCursor();
 
-      return $resSelect;
+      return is_array($resSelect) ? $resSelect : [];
     } catch (PDOException $e) {
       return "Error " . $e->getMessage() . " Line: " . $e->getLine();
     }

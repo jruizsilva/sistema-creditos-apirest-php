@@ -14,10 +14,10 @@ class Frecuencia extends Controllers
       $method = $_SERVER['REQUEST_METHOD'];
       if ($method == 'GET') {
         if (empty($id_frecuencia)) {
-          badRequestResponse("id_frecuencia es requerido");
+          badRequestResponse("Params error: id es requerido");
         }
         if (!is_numeric($id_frecuencia)) {
-          badRequestResponse("id_frecuencia debe ser un numero");
+          badRequestResponse("Params error: id debe ser un numero");
         }
         $frecuencia = $this->getModel()->findById($id_frecuencia);
         if (empty($frecuencia)) {
@@ -66,13 +66,23 @@ class Frecuencia extends Controllers
         if (empty($data['frecuencia'])) {
           badRequestResponse("frecuencia es requerido");
         }
+        $resSelect = $this->getModel()->findByFrecuencia($data['frecuencia']);
+
+        if (!empty($resSelect)) {
+          badRequestResponse("Frecuencia ya existe");
+        }
+
         $frecuencia = $data['frecuencia'];
         $resSave = $this->getModel()->save($frecuencia);
         if ($resSave > 0) {
+          $resData = [
+            'id_frecuencia' => intval($resSave),
+            'frecuencia' => $frecuencia
+          ];
           $resSuccess = [
             'success' => true,
             'message' => 'Frecuencia guardada',
-            'data' => $data
+            'data' => $resData
           ];
           jsonResponse($resSuccess, 200);
 
@@ -85,25 +95,30 @@ class Frecuencia extends Controllers
       echo $e->getMessage();
     }
   }
-  public function update(string $id_frecuencia)
+  public function update()
   {
     try {
       $method = $_SERVER['REQUEST_METHOD'];
       if ($method == 'PUT') {
-        if (empty($id_frecuencia)) {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (empty($data['id_frecuencia'])) {
           badRequestResponse("id_frecuencia es requerido");
         }
-        if (!is_numeric($id_frecuencia)) {
+        if (!is_numeric($data['id_frecuencia'])) {
           badRequestResponse("id_frecuencia debe ser un numero");
         }
-        $data = json_decode(file_get_contents('php://input'), true);
         if (empty($data['frecuencia'])) {
           badRequestResponse("frecuencia es requerido");
         }
-        $frecuencia = $data['frecuencia'];
+        $id_frecuencia = $data['id_frecuencia'];
+        $frecuencia = ucwords($data['frecuencia']);
         $resFrecuencia = $this->getModel()->findById($id_frecuencia);
         if (empty($resFrecuencia)) {
           notFoundResponse("La frecuencia a actualizar no existe");
+        }
+        $resFrecuencia = $this->getModel()->findByFrecuencia($frecuencia);
+        if (!empty($resFrecuencia)) {
+          badRequestResponse("la frecuencia " . $frecuencia . " ya esta registrada");
         }
         $resUpdate = $this->getModel()->updateFrecuencia($id_frecuencia, $frecuencia);
         if ($resUpdate > 0) {
@@ -129,10 +144,10 @@ class Frecuencia extends Controllers
       $method = $_SERVER['REQUEST_METHOD'];
       if ($method == 'DELETE') {
         if (empty($id_frecuencia)) {
-          badRequestResponse("id_frecuencia es requerido");
+          badRequestResponse("Params error: id es requerido");
         }
         if (!is_numeric($id_frecuencia)) {
-          badRequestResponse("id_frecuencia debe ser un numero");
+          badRequestResponse("Params error: id debe ser un numero");
         }
         $resFrecuencia = $this->getModel()->findById($id_frecuencia);
         if (empty($resFrecuencia)) {

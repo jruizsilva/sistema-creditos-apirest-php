@@ -69,6 +69,16 @@ function badRequestResponse(string $message)
   jsonResponse($data, 400);
 }
 
+function internalServerErrorResponse(string $message, string $error)
+{
+  $data = [
+    "status" => false,
+    "message" => $message,
+    "error" => $error
+  ];
+  jsonResponse($data, 500);
+}
+
 function methodNotAllowedResponse(string $method)
 {
   $data = [

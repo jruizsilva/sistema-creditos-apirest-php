@@ -60,7 +60,6 @@ class CuentaModel extends Mysql
       'id_cuenta' => $id_cuenta
     ];
     $resSelect = $this->select($sqlSelect, $valuesSelect);
-    d(!is_array($resSelect));
     return $resSelect;
   }
 }

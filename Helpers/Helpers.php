@@ -68,6 +68,14 @@ function badRequestResponse(string $message)
   ];
   jsonResponse($data, 400);
 }
+function paramsErrorResponse(string $message)
+{
+  $data = [
+    "status" => false,
+    "message" => "Params error: " . $message,
+  ];
+  jsonResponse($data, 400);
+}
 
 function internalServerErrorResponse(string $message, string $error)
 {

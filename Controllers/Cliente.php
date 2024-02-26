@@ -8,27 +8,31 @@ class Cliente extends Controllers
   }
 
 
-  public function cliente(string $idCliente)
+  public function findById(string $idCliente)
   {
     try {
       $method = $_SERVER['REQUEST_METHOD'];
       if ($method == "GET") {
         if (empty($idCliente)) {
-          badRequestResponse("El id es requerido");
+          paramsErrorResponse("id es requerido");
         }
         if (!is_numeric($idCliente)) {
-          badRequestResponse("El id no es valido");
+          paramsErrorResponse("$idCliente debe ser un numero");
         }
-        $cliente = $this->getModel()->getCliente($idCliente);
-        if (empty($cliente)) {
-          notFoundResponse("El cliente no existe");
+        $idCliente = intval($idCliente);
+        $resSelect = $this->getModel()->findById($idCliente);
+        if (is_array($resSelect) && empty($resSelect)) {
+          notFoundResponse("Cliente con id $idCliente no encontrado");
+        } else if (is_array($resSelect) && !empty($resSelect)) {
+          $resSuccess = [
+            'status' => 'success',
+            "msg" => "Cliente encontrado",
+            'data' => $resSelect
+          ];
+          jsonResponse($resSuccess);
+        } else {
+          internalServerErrorResponse("Error al obtener el cliente", $resSelect);
         }
-        $resSuccess = [
-          'status' => 'success',
-          "msg" => "Cliente encontrado",
-          'data' => $cliente
-        ];
-        jsonResponse($resSuccess);
       } else {
         methodNotAllowedResponse($method);
       }

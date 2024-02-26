@@ -51,9 +51,10 @@ class Mysql extends Conexion
       $stmt->execute($this->values);
       $resSelect = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt->closeCursor();
-
+      // Devuelve un array con los datos de la consulta o un array vacio si no encontro el registro
       return is_array($resSelect) ? $resSelect : [];
     } catch (PDOException $e) {
+      // Devuelve un string con el error y la linea del error
       return "Error " . $e->getMessage() . " Line: " . $e->getLine();
     }
   }

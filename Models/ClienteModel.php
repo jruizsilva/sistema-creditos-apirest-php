@@ -18,6 +18,8 @@ class ClienteModel extends Mysql
     parent::__construct();
   }
 
+
+
   public function postCliente(string $identificacion, string $nombres, string $apellidos, int $telefono, string $email, string $direccion, string $nit, string $nombreFiscal, string $direccionFiscal): bool|int
   {
     $this->identificacion = $identificacion;
@@ -113,23 +115,22 @@ class ClienteModel extends Mysql
     return $resUpdate;
   }
 
-  public function getCliente(int $idCliente): array|string
-  {
-    $this->idCliente = $idCliente;
-    $sql = "SELECT id_cliente, identificacion, nombres, apellidos, telefono, email, direccion, nit, nombre_fiscal, direccion_fiscal, DATE_FORMAT(date_created, '%d-%m-%y') as fecha_registro FROM clientes WHERE id_cliente = :idCliente AND status = :status;";
-    $select_values = [
-      ':idCliente' => $this->idCliente,
-      ':status' => 1
-    ];
-    $resSelect = $this->select($sql, $select_values);
-    return $resSelect;
-  }
+
 
   public function getClientes(): array|string
   {
     $sql = "SELECT id_cliente, identificacion, nombres, apellidos, telefono, email, direccion, nit, nombre_fiscal, direccion_fiscal, DATE_FORMAT(date_created, '%d-%m-%y') as fecha_registro FROM clientes WHERE status = 1 ORDER BY id_cliente DESC;";
     $resSelectAll = $this->select_all($sql);
     return $resSelectAll;
+  }
+
+  public function findById(int $idCliente): array|string
+  {
+    $sqlSelect = "SELECT id_cliente, identificacion, nombres, apellidos, telefono, email, direccion, nit, nombre_fiscal, direccion_fiscal, DATE_FORMAT(date_created, '%d-%m-%y') as fecha_registro FROM clientes WHERE id_cliente = :idCliente AND status != 0;";
+    $selectValues = [
+      ':idCliente' => $idCliente,
+    ];
+    return $this->select($sqlSelect, $selectValues);
   }
 
   public function deleteCliente(int $idCliente): bool|string
